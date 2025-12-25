@@ -13,4 +13,4 @@ endpoints:
     interval: 60s
     conditions:
       - "[STATUS] == 200"
-      - "[BODY] == pat(*<h1>Example Domain</h1>*)"
+      - "[BODY] == pat(*<h2>Example Domain</h2>*)"
