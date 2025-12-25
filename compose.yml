@@ -1,0 +1,40 @@
+---
+
+services:
+  gatus:
+    image: ghcr.io/twin/gatus:stable
+    container_name: gatus
+    restart: unless-stopped
+    pull_policy: always
+
+    # Security hardening
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    # If you need ICMP checks (icmp://...), you'll likely need NET_RAW.
+    # WARNING: NET_RAW increases attack surface; avoid unless required.
+    # cap_add:
+    #   - NET_RAW
+
+    # Keep it private by default; put your reverse proxy in front if needed
+    ports:
+      - "127.0.0.1:8080:8080"
+
+    environment:
+      TZ: Asia/Taipei
+      # By default, Gatus expects config/config.yaml; we point it at /config/config.yaml
+      GATUS_CONFIG_PATH: /config/config.yaml
+
+    volumes:
+      - ./config:/config:ro
+      - ./data:/data:rw
+
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+
+    # Graceful shutdown
+    stop_signal: SIGINT
+    stop_grace_period: 20s
