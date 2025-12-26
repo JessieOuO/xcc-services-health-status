@@ -1,6 +1,29 @@
 ---
+volumes:
+  postgres_storage: {}
+
 
 services:
+
+  postgres:
+    image: postgres:18-alpine
+    container_name: gatus-postgres
+    restart: unless-stopped
+    pull_policy: always
+
+    env_file:
+      - path: .env
+        required: true
+
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data:rw
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d ${POSTGRES_DB} -t 5"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   gatus:
     image: ghcr.io/twin/gatus:stable
     container_name: gatus
@@ -23,6 +46,10 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
 
+    env_file:
+      - path: .env
+        required: true
+
     environment:
       TZ: Asia/Taipei
       # By default, Gatus expects config/config.yaml; we point it at /config/config.yaml
@@ -38,3 +65,8 @@ services:
     # Graceful shutdown
     stop_signal: SIGINT
     stop_grace_period: 20s
+
+    # Ensure Gatus starts only after Postgres is healthy
+    depends_on:
+      postgres:
+        condition: service_healthy
