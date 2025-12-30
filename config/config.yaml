@@ -59,9 +59,35 @@ endpoints:
     ui:
       <<: *hide_url
 
-  - name: Minecraft Server
+  - name: Minecraft Server (mcsrvstat)
     group: XCC Games
     url: "https://api.mcsrvstat.us/3/mc.xcc.tw"
+    interval: 60s
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].online == true"
+      - "[BODY].players.max > 0"
+      - "[BODY].version != \"\""
+      - "[BODY].motd.clean[0] == pat(*Welcome*)"
+    ui:
+      <<: *hide_url
+
+  - name: Minecraft Server (mcstatus)
+    group: XCC Games
+    url: "https://api.mcstatus.io/v2/status/java/mc.xcc.tw"
+    interval: 60s
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].online == true"
+      - "[BODY].players.max > 0"
+      - "[BODY].version != \"\""
+      - "[BODY].motd.clean[0] == pat(*Welcome*)"
+    ui:
+      <<: *hide_url
+
+  - name: Minecraft Server (mcapi)
+    group: XCC Games
+    url: "https://mcapi.us/server/status?ip=mc.xcc.tw"
     interval: 60s
     conditions:
       - "[STATUS] == 200"
