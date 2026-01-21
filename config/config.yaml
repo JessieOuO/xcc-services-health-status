@@ -8,6 +8,17 @@ definition:
       hide-port: true
 
 
+alerting:
+  discord:
+    webhook-url: "${DISCORD_WEBHOOK_URL}"
+    default-alert:
+      enabled: true
+      failure-threshold: 3
+      success-threshold: 5
+      send-on-resolved: true
+      description: "healthcheck failed (default)"
+
+
 ui:
   title: "Health Status ǀ XCC"
   description: "This page provides the real-time operational status and recent availability history of XCC services. If you encounter any issues, please check here first to see whether it is a system-wide incident."
@@ -35,6 +46,9 @@ endpoints:
     conditions:
       - "[STATUS] == 200"
       - "[BODY] == pat(*<title>*n8n*</title>*)"
+    alerts:
+      - type: discord
+        description: "Health Check Failed - n8n.xcc.tw is down"
 
   - name: PDF
     group: services
@@ -71,3 +85,6 @@ endpoints:
       - "[BODY].motd.clean[0] == pat(*Welcome*)"
     ui:
       <<: *hide_url
+    alerts:
+      - type: discord
+        description: "Health Check Failed - Minecraft Server is down"
