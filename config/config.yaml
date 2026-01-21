@@ -46,6 +46,9 @@ endpoints:
     conditions:
       - "[STATUS] == 200"
       - "[BODY] == pat(*<title>*n8n*</title>*)"
+    alerts:
+      - type: discord
+        description: "Health Check Failed - n8n.xcc.tw is down"
 
   - name: PDF
     group: services
@@ -82,3 +85,6 @@ endpoints:
       - "[BODY].motd.clean[0] == pat(*Welcome*)"
     ui:
       <<: *hide_url
+    alerts:
+      - type: discord
+        description: "Health Check Failed - Minecraft Server is down"
