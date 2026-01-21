@@ -8,6 +8,17 @@ definition:
       hide-port: true
 
 
+alerting:
+  discord:
+    webhook-url: "${DISCORD_WEBHOOK_URL}"
+    default-alert:
+      enabled: true
+      failure-threshold: 3
+      success-threshold: 5
+      send-on-resolved: true
+      description: "healthcheck failed (default)"
+
+
 ui:
   title: "Health Status ǀ XCC"
   description: "This page provides the real-time operational status and recent availability history of XCC services. If you encounter any issues, please check here first to see whether it is a system-wide incident."
